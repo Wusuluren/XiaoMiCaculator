@@ -50,7 +50,7 @@ class ViewController: UIViewController {
             return NumberFormatter().number(from: digitalText!)!.doubleValue
         }
         set {
-            displayLabel5.text = "\(newValue)"
+            displayLabel5.text = floatToString(data: newValue)
             isUserInTheMiddleOfTypeing = false
         }
     }
@@ -91,6 +91,21 @@ class ViewController: UIViewController {
         displayLabel6.textColor = UIColor.darkGray
     }
     
+    func floatToString(data:Double) -> String {
+        let src = String(format:"%.9f", arguments:[data])
+        for i in 0...src.count-1 {
+            let c = src[src.index(src.startIndex, offsetBy: src.count-1-i)]
+            if c != "0" {
+                if c == "." {
+                    return String(src.dropLast(i+1))
+                } else {
+                    return String(src.dropLast(i))
+                }
+            }
+        }
+        return src
+    }
+    
     func fillCalcDisplayLables() {
         let history = calculator.history()
         if history.count < 1 {
@@ -106,7 +121,7 @@ class ViewController: UIViewController {
             if history[idx].seqNo == lastSeqNo {
                 continue
             }
-            displayLabelArray[labelIdx].text = "\(history[idx].operation) \(history[idx].data)"
+            displayLabelArray[labelIdx].text = "\(history[idx].operation) \(floatToString(data:history[idx].data))"
             labelIdx -= 1
             if labelIdx < 0 {
                 return
@@ -135,7 +150,7 @@ class ViewController: UIViewController {
             if history[idx].seqNo == lastSeqNo {
                 continue
             }
-            displayLabelArray[labelIdx].text = "\(history[idx].operation) \(history[idx].data)"
+            displayLabelArray[labelIdx].text = "\(history[idx].operation) \(floatToString(data: history[idx].data))"
             labelIdx -= 1
             if labelIdx < 0 {
                 return
@@ -197,7 +212,7 @@ class ViewController: UIViewController {
             } else {
                 currentResult = displayValue
             }
-            displayLabel6.text! = "= " + "\(currentResult)"
+            displayLabel6.text! = "= " + floatToString(data: currentResult)
             fillCalcDisplayLables()
             changeBoldDisplayFrom6To5()
             break
@@ -208,11 +223,11 @@ class ViewController: UIViewController {
                 }
                 fillUndoDisplayLables(lastNodeSeqNo: lastNode.seqNo)
                 if lastNode.data != 0 {
-                    displayLabel5.text = "\(lastNode.operation) \(lastNode.data)"
+                    displayLabel5.text = "\(lastNode.operation) \(floatToString(data:lastNode.data))"
                 } else {
                     displayLabel5.text = "\(lastNode.operation) "
                 }
-                displayLabel6.text = "\(lastNode.result)"
+                displayLabel6.text = floatToString(data:lastNode.result)
             }
             break
         default:
